@@ -1,0 +1,18 @@
+- hosts: all
+  gather_facts: false
+  vars:    
+    username:
+      - Alice      
+      - Bob
+      - Carol
+  tasks:
+  - name: include var
+    include_vars: 
+      file: vault.yml
+  - name: add users
+    user:
+      name: "{{ item }}"
+      comment: "{{ item }}@example.com"
+      home: /home/{{ item }}
+      password: "{{ userpass | password_hash('sha512') }}"
+    loop: "{{username}}"
