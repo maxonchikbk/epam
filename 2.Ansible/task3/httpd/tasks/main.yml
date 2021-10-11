@@ -1,0 +1,21 @@
+- name: install epel repo
+  yum:
+    name: epel-release
+    state: latest
+- name: "install {{ package_name }}"
+  yum:
+    name: "{{ package_name }}"
+    state: latest
+- name: copy index.html
+  template:
+    src: templates/index.j2
+    dest: /var/www/html/index.html
+  notify:
+    - Start {{ package_name }}
+- name: configure firewall
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+  notify:
+    - Start {{ package_name }}

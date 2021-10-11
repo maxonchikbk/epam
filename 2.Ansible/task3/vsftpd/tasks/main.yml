@@ -1,0 +1,40 @@
+- name: install epel repo
+  yum:
+    name: epel-release
+    state: latest
+- name: install "{{ package_name }}"
+  yum:
+    name:
+    - policycoreutils-python-utils
+    - "{{ package_name }}"
+    state: latest
+- name: copy vsftpd.conf
+  template:
+    src: templates/vsftpd.j2
+    dest: /etc/vsftpd/vsftpd.conf
+  notify:
+    - Start {{ package_name }}
+- name: set context
+  command: chcon -t public_content_rw_t /var/ftp/pub/upload
+- name: Create a directory "{{ anon_dir }}"
+  file:
+    path: "{{ anon_dir }}"
+    state: directory
+    mode: '555'
+- name: Create upload directory "{{ anon_upload_dir }}"
+  file:
+    path: "{{ anon_upload_dir }}"
+    state: directory
+    mode: '777'
+- name: Allow ftpd_anon_write
+  seboolean:
+    name: ftpd_anon_write
+    state: "{{ ftpd_anon_write }}"
+    persistent: yes
+- name: configure firewall
+  firewalld:
+    service: ftp
+    permanent: true
+    state: enabled
+  notify:
+    - Start {{ package_name }}

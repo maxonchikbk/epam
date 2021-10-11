@@ -1,0 +1,29 @@
+- hosts: localhost
+  tasks:
+  - name: install epel repo
+    yum:
+      name: [ epel-release, httpd, ansible, bash-completion, git, device-mapper-persistent-data, lvm2, python3, vim, yum-utils ]
+      state: latest
+  - name: configure firewall
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+  - name: clone AWS repo
+    git:
+      repo: 'https://github.com/ansible/awx'
+      dest: /vagrant/awx
+      version: 17.0.1
+  - name: bash
+    command: /bin/bash /vagrant/task4/bash.sh
+  - name: Edit config
+    lineinfile:
+      path: /vagrant/awx/installer/inventory
+      regexp: '^# admin_password'      
+      line: admin_password=password
+  - name: Edit config
+    lineinfile:
+      path: /vagrant/awx/installer/inventory
+      regexp: '^# project_data_dir'      
+      line: project_data_dir=/var/lib/awx/projects
+  

@@ -1,0 +1,7 @@
+---
+# handlers file for vsftpd
+- name: Start {{ package_name }}
+  service: 
+    name: "{{ package_name }}"
+    state: started 
+    enabled: yes

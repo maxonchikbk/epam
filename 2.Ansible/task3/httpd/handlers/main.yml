@@ -1,0 +1,7 @@
+---
+# handlers file for httpd
+- name: Start {{ package_name }}
+  service: 
+    name: "{{ package_name }}"
+    state: started 
+    enabled: yes

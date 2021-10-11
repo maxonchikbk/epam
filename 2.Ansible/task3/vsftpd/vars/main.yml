@@ -1,0 +1,7 @@
+---
+package_name: vsftpd
+anonymous_enable: "YES"
+anon_upload_enable: "YES"
+anon_dir: "/var/ftp/pub"
+anon_upload_dir: "/var/ftp/pub/upload"
+ftpd_anon_write: "YES"
