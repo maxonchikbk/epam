@@ -1,0 +1,12 @@
+FROM alpine:latest as build-stage
+RUN apk add npm --no-cache
+COPY ./frontend /frontend
+WORKDIR /frontend
+RUN  npm install && npx browserslist@latest --update-db && npm run build
+
+FROM alpine:latest
+COPY --from=build-stage /frontend/build /build
+RUN apk add npm --no-cache && npm install -g serve
+ENTRYPOINT [ "serve" ]
+EXPOSE 5000
+CMD ["-s", "build"]

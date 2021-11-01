@@ -1,0 +1,1 @@
+﻿New-PSDrive -Name X -PSProvider FileSystem -Root "\\maximcherepennikovsa.file.core.windows.net\mcfileshare" -Persist

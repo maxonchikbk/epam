@@ -1,0 +1,59 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "westeurope"
+        },
+        "networkInterfaceName": {
+            "value": "task1vm912"
+        },
+        "subnetName": {
+            "value": "default"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/d141e78e-f7a9-4013-bb34-623f58247d8b/resourceGroups/MaximCherepennikov_RG/providers/Microsoft.Network/virtualNetworks/MaximCherepennikov_RG-vnet"
+        },
+        "publicIpAddressName": {
+            "value": "task1vm-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": {
+            "value": "Basic"
+        },
+        "virtualMachineName": {
+            "value": "task1vm"
+        },
+        "virtualMachineComputerName": {
+            "value": "task1vm"
+        },
+        "virtualMachineRG": {
+            "value": "MaximCherepennikov_RG"
+        },
+        "osDiskType": {
+            "value": "StandardSSD_LRS"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_D2as_v4"
+        },
+        "adminUsername": {
+            "value": "max"
+        },
+        "adminPassword": {
+            "reference": {
+                "keyVault": {
+                    "id": "/subscriptions/d141e78e-f7a9-4013-bb34-623f58247d8b/resourceGroups/MaximCherepennikov_RG/providers/Microsoft.KeyVault/vaults/MaximCherepennikovVault"
+                },
+                "secretName": "vmpassword"
+            }
+        },
+        "patchMode": {
+            "value": "AutomaticByOS"
+        },
+        "enableHotpatching": {
+            "value": false
+        }
+    }
+}
