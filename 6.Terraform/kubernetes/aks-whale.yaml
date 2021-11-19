@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simplewhale 
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: simplewhale
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplewhale  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simplewhale
+  template:
+    metadata:
+      labels:
+        app: simplewhale
+    spec:
+      containers:
+      - name: aks-helloworld-two
+        image: maxonchik/simplewhale
+        ports:
+        - containerPort: 80       
