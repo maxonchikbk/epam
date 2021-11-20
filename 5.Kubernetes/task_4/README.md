@@ -1,4 +1,4 @@
-## 1. Create users deploy_view and deploy_edit. Give the user deploy_view rights only to view deployments, pods. Give the user deploy_edit full rights to the objects deployments, pods.
+1. Create users deploy_view and deploy_edit. Give the user deploy_view rights only to view deployments, pods. Give the user deploy_edit full rights to the objects deployments, pods.
 * ### [deloybindings.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_4/deloybindings.yaml)
 ```
 openssl genrsa -out deploy_view.key 2048
