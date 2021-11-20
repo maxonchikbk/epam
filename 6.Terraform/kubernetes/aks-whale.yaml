@@ -53,9 +53,9 @@ spec:
           limits:
             cpu: 300m
             memory: 512Mi         
-        # volumeMounts:
-        # - name: config
-        #   mountPath: /etc/nginx/conf.d/
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/conf.d/
       volumes:
       - name: config
         configMap:
@@ -67,17 +67,18 @@ metadata:
   name: configmap-nginx
 data:
   default.conf: |
-    server {
-        listen       80 default_server;
-        server_name  _;
+      server {
+          listen       80;
+          listen  [::]:80;
+          server_name  _;
 
-        default_type text/plain;
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.html index.htm;
+          }
 
-        location / {
-            root   html;
-            index  index.html;
-        }
-        location /host {
-            return 200 '$hostname\n';
-        }
-    }
+          default_type text/plain;
+          location /host {
+              return 200 '$hostname\n';
+          }
+      }
