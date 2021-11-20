@@ -9,7 +9,7 @@ kubectl config set-credentials deploy_view --client-certificate=deploy_view.crt 
 kubectl config set-context deploy_view --cluster=minikube --user=deploy_view
 ```
 ___
-##2. Create namespace prod. Create users prod_admin, prod_view. Give the user prod_admin admin rights on ns prod, give the user prod_view only view rights on namespace prod.
+2. Create namespace prod. Create users prod_admin, prod_view. Give the user prod_admin admin rights on ns prod, give the user prod_view only view rights on namespace prod.
 * ### [prodbindings.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_4/prodbindings.yaml)
 ```
 openssl genrsa -out prod_admin.key 2048
