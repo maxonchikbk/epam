@@ -1,3 +1,31 @@
+* In Minikube in namespace kube-system, there are many different pods running. Your task is to figure out who creates them, and who makes sure they are running (restores them after deletion).
+```
+PS C:\Users\maxon\Study\epam\5.Kubernetes\task_2> k describe po -n kube-system | Select-String "Controlled By", "^Name:"
+
+Name:                 coredns-74ff55c5b-9zqtr
+Controlled By:  ReplicaSet/coredns-74ff55c5b
+Name:                 etcd-minikube
+Controlled By:  Node/minikube
+Name:         kindnet-4mbhj
+Controlled By:  DaemonSet/kindnet
+Name:                 kube-apiserver-minikube
+Controlled By:  Node/minikube
+Name:                 kube-controller-manager-minikube
+Controlled By:  Node/minikube
+Name:                 kube-proxy-6m8bp
+Controlled By:  DaemonSet/kube-proxy
+Name:                 kube-scheduler-minikube
+Controlled By:  Node/minikube
+Name:         storage-provisioner
+```
+* Implement Canary deployment of an application via Ingress. Traffic to canary deployment should be redirected if you add "canary:always" in the header, otherwise it should go to regular deployment. Set to redirect a percentage of traffic to canary deployment.
+* [ingress-canary.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_2/ingress-canary.yaml)
+```
+    kubernetes.io/ingress.class: "nginx"
+    ingress.nginx.kubernetes.io/canary: "true"
+    ingress.nginx.kubernetes.io/canary-by-header: "canary:always"
+    ingress.nginx.kubernetes.io/canary-weight: "10"
+```
 # Task 2
 ### ConfigMap & Secrets
 ```bash
