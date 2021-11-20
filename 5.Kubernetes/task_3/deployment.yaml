@@ -17,14 +17,35 @@ spec:
       containers:
         - name: minio
           image: minio/minio
-          args: ["server", "/data", "--console-address", ":9001"]
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          args: ["server", "/data", "--console-address", ":9001"]          
           ports:
             - containerPort: 9001
           volumeMounts:
             - name: data
-              mountPath: "/data"
-              readOnly: false
+              mountPath: "/data"              
+            - name: empty
+              mountPath: "/empty"              
+        - image: nginx:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          name: nginx
+          ports:
+          - containerPort: 80
+          volumeMounts:
+            - name: config-nginx
+              mountPath: /etc/nginx/conf.d
       volumes:
+        - name: config-nginx
+          configMap:
+            name: nginx-configmap              
         - name: data
           persistentVolumeClaim:
             claimName: minio-deployment-claim
+        - name: empty
+          emptyDir: {}

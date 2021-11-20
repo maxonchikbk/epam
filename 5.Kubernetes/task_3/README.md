@@ -1,3 +1,49 @@
+* We published minio "outside" using nodePort. Do the same but using ingress.
+[ingress.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/ingress.yaml)
+* Publish minio via ingress so that minio by ip_minikube and nginx returning hostname (previous job) by path ip_minikube/web are available at the same time.
+[deployment.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/deployment.yaml)
+```
+        - image: nginx:latest
+          name: nginx
+          ports:
+          - containerPort: 80
+          volumeMounts:
+            - name: config-nginx
+              mountPath: /etc/nginx/conf.d
+```              
+[ingress.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/ingress.yaml)
+```
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+             name: minio
+             port: 
+                number: 9001
+      - path: /web
+        pathType: Prefix
+        backend:
+          service:
+             name: minio-web
+             port: 
+                number: 80
+```
+[services.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/services.yaml)
+* Create deploy with emptyDir save data to mountPoint emptyDir, delete pods, check data.
+Emptydir doesn't keep data after deleting a pod. PersistentVolume do.
+```
+      volumeMounts:
+          - name: data
+              mountPath: "/data"              
+          - name: empty
+              mountPath: "/empty" 
+      volumes:      
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-deployment-claim
+        - name: empty
+          emptyDir: {}        
+```
 # Task 3
 ### [Read more about CSI](https://habr.com/ru/company/flant/blog/424211/)
 ### Create pv in kubernetes
