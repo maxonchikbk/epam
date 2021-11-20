@@ -1,7 +1,7 @@
 * We published minio "outside" using nodePort. Do the same but using ingress.
-[ingress.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/ingress.yaml)
+    ### [ingress.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/ingress.yaml)
 * Publish minio via ingress so that minio by ip_minikube and nginx returning hostname (previous job) by path ip_minikube/web are available at the same time.
-[deployment.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/deployment.yaml)
+    ### [deployment.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/deployment.yaml) :
 ```
         - image: nginx:latest
           name: nginx
@@ -11,7 +11,8 @@
             - name: config-nginx
               mountPath: /etc/nginx/conf.d
 ```              
-[ingress.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/ingress.yaml)
+### [ingress.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/ingress.yaml)
+
 ```
       - path: /
         pathType: Prefix
@@ -28,7 +29,8 @@
              port: 
                 number: 80
 ```
-[services.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/services.yaml)
+### [services.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_3/services.yaml)
+
 * Create deploy with emptyDir save data to mountPoint emptyDir, delete pods, check data.
 Emptydir doesn't keep data after deleting a pod. PersistentVolume do.
 ```
