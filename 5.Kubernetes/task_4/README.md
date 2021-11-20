@@ -1,3 +1,31 @@
+1. Create users deploy_view and deploy_edit. Give the user deploy_view rights only to view deployments, pods. Give the user deploy_edit full rights to the objects deployments, pods.
+* ### [deloybindings.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_4/deloybindings.yaml) :
+```
+openssl genrsa -out deploy_view.key 2048
+openssl req -new -key deploy_view.key -out deploy_view .csr -subj "/CN=deploy_view"
+openssl x509 -req -in deploy_view.csr -CA /mnt/c/Users/maxon/.minikube/ca.crt -CAkey /mnt/c/Users/maxon/.minikube/ca.key -CAcreateserial -out deploy_view.crt -days 500
+
+kubectl config set-credentials deploy_view --client-certificate=deploy_view.crt --client-key=deploy_view.key
+kubectl config set-context deploy_view --cluster=minikube --user=deploy_view
+```
+2. Create namespace prod. Create users prod_admin, prod_view. Give the user prod_admin admin rights on ns prod, give the user prod_view only view rights on namespace prod.
+* ### [prodbindings.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_4/prodbindings.yaml) :
+```
+openssl genrsa -out prod_admin.key 2048
+openssl req -new -key prod_admin.key -out prod_admin.csr -subj "/CN=prod_admin"
+openssl x509 -req -in prod_admin.csr -CA /mnt/c/Users/maxon/.minikube/ca.crt -CAkey /mnt/c/Users/maxon/.minikube/ca.key -CAcreateserial -out prod_admin.crt -days 500
+
+kubectl config set-credentials prod_admin --client-certificate=prod_admin.crt --client-key=prod_admin.key
+kubectl config set-context prod_admin --cluster=minikube --user=prod_admin
+```
+3. Create a serviceAccount sa-namespace-admin. Grant full rights to namespace default. Create context, authorize using the created sa, check accesses.
+* ### [serviceAccount.yaml](https://github.com/maxonchikbk/epam/blob/main/5.Kubernetes/task_4/serviceAccount.yaml) :
+```
+PS C:\Users\maxon\Study\epam\5.Kubernetes\task_4> kubectl auth can-i get pods --as=system:serviceaccount:default:sa-namespace-admin
+yes
+PS C:\Users\maxon\Study\epam\5.Kubernetes\task_4> kubectl auth can-i get pods --as=system:serviceaccount:prod:sa-namespace-admin
+no
+```
 # Task 4
 ### Check what I can do
 ```bash
