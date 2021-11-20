@@ -1,26 +1,15 @@
 variable "prefix" {
-  default     = "mc"
-  description = "A prefix used for all resources in this example"
+  default     = "MaxChe"  
 }
 
 variable "location" {
-  default     = "southcentralus"
-  description = "The Azure Region in which all resources in this example should be provisioned"
+  default     = "southcentralus"  
 }
 
-# variable "client_app_id" {
-  
-#   description = "The Client app ID of the AKS client application"
-# }
+variable "node_count"{
+  default = 3  
+}
 
-# variable "server_app_id" {
-#   description = "The Server app ID of  the AKS server application"
-# }
-
-# variable "server_app_secret" {
-#   description = "The secret created for AKS server application"
-# }
-
-# variable "tenant_id" {
-#   description = "The Azure AD tenant id "
-# }
+variable "ssh_public_key" {
+    default = "~/.ssh/id_rsa.pub"
+}

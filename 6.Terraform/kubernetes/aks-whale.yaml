@@ -14,7 +14,7 @@ kind: Deployment
 metadata:
   name: simplewhale  
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: simplewhale
@@ -26,5 +26,58 @@ spec:
       containers:
       - name: aks-helloworld-two
         image: maxonchik/simplewhale
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80       
+        - containerPort: 80    
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 10
+          successThreshold: 2
+          timeoutSeconds: 3
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+          initialDelaySeconds: 10
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 300m
+            memory: 512Mi         
+        # volumeMounts:
+        # - name: config
+        #   mountPath: /etc/nginx/conf.d/
+      volumes:
+      - name: config
+        configMap:
+          name: configmap-nginx  
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-nginx
+data:
+  default.conf: |
+    server {
+        listen       80 default_server;
+        server_name  _;
+
+        default_type text/plain;
+
+        location / {
+            root   html;
+            index  index.html;
+        }
+        location /host {
+            return 200 '$hostname\n';
+        }
+    }
