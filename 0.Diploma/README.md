@@ -1,0 +1,2 @@
+# Task
+Variant 3. Using API https://covidtracker.bsg.ox.ac.uk/about-api get all data about “By country over time" for current year and store it into your DB: date_value, country_code, confirmed, deaths, stringency_actual, stringency. Output the data by country_code (the country_code is set) in form of a table and sort them by deaths (or date_value which is the same) in ascending order.

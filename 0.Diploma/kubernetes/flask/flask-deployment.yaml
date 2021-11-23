@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:      
+      containers:
+      - image: maxonchik/flask_app
+        name: flask
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        env:
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_URL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+
