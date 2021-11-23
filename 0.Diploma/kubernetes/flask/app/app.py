@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask import request
 from flask import jsonify
+import json
+from waitress import serve
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
@@ -34,15 +36,34 @@ class Covid(db.Model):
 def hello():
     return "Hello World!"
 
-@app.route('/covid', methods=['POST', 'GET'])
+# @app.route('/jsonfile')
+# def jsonfilefunc():
+#     f = open('2021.json')
+#     jsonf = json.load(f)
+#     f.close()
+#     for dv in jsonf['data']:                
+#         for cc in jsonf['data'][dv]:                    
+#             data = jsonf['data'][dv][cc]                    
+#             new_entry = Covid(country_code=data['country_code'], date_value=data['date_value'], confirmed=data['confirmed'], deaths=data['deaths'], stringency_actual=data['stringency_actual'], stringency=data['stringency'])
+#             db.session.add(new_entry)
+#             db.session.commit()
+#     return "Done!"
+
+
+@app.route('/getcovid', methods=['POST', 'GET'])
 def handle_covid():
 
     if request.method == 'POST':
         if request.is_json:
-            data = request.get_json(force=False, silent=False, cache=True)
-            new_entry = Covid(country_code=data['country_code'], date_value=data['date_value'], confirmed=data['confirmed'], deaths=data['deaths'], stringency_actual=data['stringency_actual'], stringency=data['stringency'])
-            db.session.add(new_entry)
-            db.session.commit()
+            json = request.get_json(force=False, silent=False, cache=True)
+            
+            for dv in json['data']:                
+                for cc in json['data'][dv]:                    
+                    data = json['data'][dv][cc]                    
+                    new_entry = Covid(country_code=data['country_code'], date_value=data['date_value'], confirmed=data['confirmed'], deaths=data['deaths'], stringency_actual=data['stringency_actual'], stringency=data['stringency'])
+                    db.session.add(new_entry)
+                    db.session.commit()
+                
             return {"message": "entry {} has been created successfully.".format(new_entry.country_code)}
         else:
             return {"error": "The request payload is not in JSON format"}
@@ -61,7 +82,7 @@ def handle_covid():
 
         return {"count": len(results), "covid": results}
 
-@app.route('/covid/<entry_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/getcovid/?country_code=<entry_id>', methods=['GET', 'PUT', 'DELETE'])
 def handle_entry(entry_id):
     entry = Covid.query.get_or_404(entry_id)
 
@@ -94,4 +115,4 @@ def handle_entry(entry_id):
         return {"message": f"Entry {entry.country_code} successfully deleted"}
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    serve(app, host='0.0.0.0', port=5000)

@@ -1,4 +1,3 @@
-from app import db
 
 class Covid(db.Model):
     __tablename__ = 'covid'

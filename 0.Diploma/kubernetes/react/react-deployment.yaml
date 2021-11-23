@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-app
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: react-app
+    spec:      
+      containers:
+      - image: maxonchik/react_app
+        name: react
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          protocol: TCP        
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+
