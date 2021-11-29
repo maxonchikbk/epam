@@ -1,28 +1,3 @@
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
 import React, { Fragment, useState, useEffect } from 'react';
 import './App.css';
 
@@ -31,7 +6,7 @@ const App = () => {
         const getAPI = () => {
             // Change this endpoint to whatever local or online address you have
             // Local PostgreSQL Database
-            const API = 'http://172.20.244.66/';
+            const API = 'http://172.19.183.247/getcovid/?entry_id=RUS';
 
             fetch(API)
                 .then((response) => {
@@ -51,38 +26,65 @@ const App = () => {
     return (
         <Fragment>
             <header>
-                <h1>Covid</h1>
+                <h1>Covid statistics</h1>
             </header>
-            <div className="form-container">           
-                <form method="GET" action="http://172.20.244.66/getcovid/">
+            <div className="form-container">
+                <h2>Choose country</h2>
+                <div>
+
+                </div>  
+                <form method="GET" action="http://172.19.183.247/getcovid/">
                     <div>
-                        <label>Country</label>
-                        <input type="text" name="country_code" required />
+                        <input type="text" name="entry_id" required />
                     </div>
-                    
                     <div>
-                        <button type="submit">Get data</button>
+                        <button type="submit">Apply</button>
                     </div>
                 </form>
             </div>
             <main>
-                {loading === true ? (
-                    <div>
-                        <h1>Loading...</h1>
-                    </div>
-                ) : (
-                    <section>
-                        {apiData.map((movie) => {
-                            const movieId = movie[0];
-                            const country_code = movie[1];
-                           
-                            return (
-                                <div className="movie-container" key={String(movieId)}>
-                                    <h1>{country_code}</h1>                                    
-                                </div>
-                            );
+                {(
+                    <table>
+                      <tbody>
+                                <th>Country</th>
+                                <th>date</th>
+                                <th>confirmed</th>
+                                <th>deaths</th>
+                                <th>stringency_actual</th>
+                                <th>stringency</th>
+                        {apiData.map((field) => {
+                            const country_code = field[0];
+                            const date_value = field[2];
+                            const confirmed = field[1];
+                            const deaths = field[3];
+                            const stringency_actual = field[4];
+                            const stringency = field[5];                              
+                      return (                                                                                                
+                          <tr>
+                                    <td>
+                                        {country_code}
+                                    </td>
+                                    <td>
+                                         {date_value}
+                                    </td>
+                                    <td>
+                                         {confirmed}
+                                    </td>
+                                    <td>
+                                         {deaths}
+                                    </td>
+                                    <td>
+                                         {stringency_actual}
+                                    </td>
+                                    <td>
+                                         {stringency}
+                                    </td>
+                              </tr>
+                              
+                           );  
                         })}
-                    </section>
+                      </tbody>  
+                    </table>
                 )}
             </main>
         </Fragment>

@@ -16,13 +16,20 @@ spec:
         pathType: Prefix
         backend:
           service:
-             name: react-app-svc
+             name: react
              port: 
                 number: 3000
       - path: /getcovid
         pathType: Prefix
         backend:
           service:
-             name: flask-app-svc
+             name: flask
+             port: 
+                number: 5000
+      - path: /getall
+        pathType: Prefix
+        backend:
+          service:
+             name: flask
              port: 
                 number: 5000

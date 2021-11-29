@@ -1,15 +1,24 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask import request
-from flask import jsonify
 import json
 from waitress import serve
+from prometheus_flask_exporter import PrometheusMetrics
+import psycopg2
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+metrics = PrometheusMetrics(app)
+
+con = psycopg2.connect(
+    database="testdatabase",
+    user="testuser",
+    password="testpassword",
+    host="postgres")
+
+cur = con.cursor()
 
 class Covid(db.Model):
     __tablename__ = 'covid'
@@ -32,10 +41,17 @@ class Covid(db.Model):
     def __repr__(self):
         return f"<Country {self.country_code}>"
 
-@app.route('/')
-def hello():
-    return "Hello World!"
+@app.route('/getall')
+def main():
+    cur.execute('SELECT * FROM covid')
+    rows = cur.fetchall()
+    response = jsonify(rows)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
+# @app.route('/')
+# def hello():
+#     return "Hello World!"
 # @app.route('/jsonfile')
 # def jsonfilefunc():
 #     f = open('2021.json')
@@ -50,69 +66,45 @@ def hello():
 #     return "Done!"
 
 
-@app.route('/getcovid', methods=['POST', 'GET'])
-def handle_covid():
+# @app.route('/getcovid', methods=['POST', 'GET'])
+# def handle_covid():
 
-    if request.method == 'POST':
-        if request.is_json:
-            json = request.get_json(force=False, silent=False, cache=True)
+#     if request.method == 'POST':
+#         if request.is_json:
+#             json = request.get_json(force=False, silent=False, cache=True)
             
-            for dv in json['data']:                
-                for cc in json['data'][dv]:                    
-                    data = json['data'][dv][cc]                    
-                    new_entry = Covid(country_code=data['country_code'], date_value=data['date_value'], confirmed=data['confirmed'], deaths=data['deaths'], stringency_actual=data['stringency_actual'], stringency=data['stringency'])
-                    db.session.add(new_entry)
-                    db.session.commit()
+#             for dv in json['data']:                
+#                 for cc in json['data'][dv]:                    
+#                     data = json['data'][dv][cc]                    
+#                     new_entry = Covid(country_code=data['country_code'], date_value=data['date_value'], confirmed=data['confirmed'], deaths=data['deaths'], stringency_actual=data['stringency_actual'], stringency=data['stringency'])
+#                     db.session.add(new_entry)
+#                     db.session.commit()
                 
-            return {"message": "entry {} has been created successfully.".format(new_entry.country_code)}
-        else:
-            return {"error": "The request payload is not in JSON format"}
+#             return {"message": "entry {} has been created successfully.".format(new_entry.country_code)}
+#         else:
+#             return {"error": "The request payload is not in JSON format"}
         
-    elif request.method == 'GET':
-        covid = Covid.query.all()
-        results = [
-            {
-                "country_code": entry.country_code,
-                "date_value": entry.date_value,
-                "confirmed": entry.confirmed,
-                "deaths": entry.deaths,
-                "stringency_actual": entry.stringency_actual,
-                "stringency": entry.stringency                
-            } for entry in covid]
+#     elif request.method == 'GET':
+#         covid = Covid.query.all()
+#         results = [
+#             {
+#                 "country_code": entry.country_code,
+#                 "date_value": entry.date_value,
+#                 "confirmed": entry.confirmed,
+#                 "deaths": entry.deaths,
+#                 "stringency_actual": entry.stringency_actual,
+#                 "stringency": entry.stringency                
+#             } for entry in covid]
 
-        return {"count": len(results), "covid": results}
+#         return {"count": len(results), "covid": results}
 
-@app.route('/getcovid/?country_code=<entry_id>', methods=['GET', 'PUT', 'DELETE'])
-def handle_entry(entry_id):
-    entry = Covid.query.get_or_404(entry_id)
-
-    if request.method == 'GET':
-        response = {
-            "country_code": entry.country_code,
-                "date_value": entry.date_value,
-                "confirmed": entry.confirmed,
-                "deaths": entry.deaths,
-                "stringency_actual": entry.stringency_actual,
-                "stringency": entry.stringency   
-        }
-        return {"message": "success", "entry": response}
-
-    elif request.method == 'PUT':        
-        data = request.get_json()
-        country_code=data['country_code']
-        date_value=data['date_value']
-        confirmed=data['confirmed']
-        deaths=data['deaths']
-        stringency_actual=data['stringency_actual']
-        stringency=data['stringency']        
-        db.session.add(entry)
-        db.session.commit()
-        return {"message": f"Entry {entry.country_code} successfully updated"}
-
-    elif request.method == 'DELETE':
-        db.session.delete(entry)
-        db.session.commit()
-        return {"message": f"Entry {entry.country_code} successfully deleted"}
+@app.route('/getcovid/')
+def handle_entry():
+    id = request.args.get('entry_id')
+    print(id)
+    cur.execute("SELECT * from covid where country_code = '%s' order by date_value" % id)
+    rows = cur.fetchall()
+    return jsonify(rows)    
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
