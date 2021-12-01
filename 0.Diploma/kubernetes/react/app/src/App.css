@@ -29,18 +29,12 @@ header h1 {
     color: #ffffff;
 }
 
-section {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    margin: 4rem;
-}
 
 .form-container {
     margin: 2rem auto;
     width: 50rem;
     max-width: 100%;
-    padding: 0 2rem 0 2rem;
+    padding: 0 2rem 0 2rem;    
 }
 
 form {
@@ -75,62 +69,6 @@ form div {
     display: flex;
     flex-flow: column;
     margin-bottom: 1.3rem;
-}
-
-.movie-container {
-    background: #fcee0b;
-    padding: 4rem;
-    margin-top: 2rem;
-    border-radius: 2rem 7rem;
-    width: 50rem;
-    max-width: 100%;
-}
-
-.movie-container h1 {
-    font-size: 3rem;
-}
-
-.movie-container p {
-    margin: 1rem 0 1rem 0;
-    font-size: 2rem;
-}
-
-.movie-container img {
-    width: 10rem;
-    height: 15rem;
-}
-
-.high {
-    background: #66cc32;
-    width: 4rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: 700;
-    display: inline-block;
-    padding: 0.5rem;
-    border-radius: 1rem;
-}
-
-.medium {
-    background: #ffcc32;
-    width: 4rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: 700;
-    display: inline-block;
-    padding: 0.5rem;
-    border-radius: 1rem;
-}
-
-.low {
-    background: #ff0100;
-    width: 4rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: 700;
-    display: inline-block;
-    padding: 0.5rem;
-    border-radius: 1rem;
 }
 
 @media screen and (max-width: 1094px) {

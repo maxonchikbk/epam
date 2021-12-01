@@ -22,6 +22,10 @@ spec:
         ports:
         - containerPort: 5000
           protocol: TCP
+        command:
+          - "flask db init"
+          - "flask db migrate"
+          - "flask db upgrade"
         env:
         - name: POSTGRES_URL
           valueFrom:
