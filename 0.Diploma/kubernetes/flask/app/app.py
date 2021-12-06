@@ -6,8 +6,8 @@ import requests
 from waitress import serve
 from prometheus_flask_exporter import PrometheusMetrics
 import psycopg2
-from flask_cors import CORS
 import os 
+from flask_wtf.csrf import CSRFProtect
 
 class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get("POSTGRES_URL")
@@ -15,8 +15,8 @@ class Config(object):
 
 
 app = Flask(__name__)
-app.config['WTF_CSRF_ENABLED'] = False # Sensitive
-# CORS(app)
+csrf = CSRFProtect()
+csrf.init_app(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

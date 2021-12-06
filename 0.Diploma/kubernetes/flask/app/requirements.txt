@@ -6,6 +6,7 @@ Flask==2.0.2
 Flask-Cors==3.0.10
 Flask-Migrate==3.1.0
 Flask-SQLAlchemy==2.5.1
+Flask-WTF==1.0.0
 greenlet==1.1.2
 idna==3.3
 importlib-metadata==4.8.2
@@ -24,3 +25,4 @@ urllib3==1.26.7
 waitress==2.0.0
 Werkzeug==2.0.2
 zipp==3.6.0
+WTForms==3.0.0
