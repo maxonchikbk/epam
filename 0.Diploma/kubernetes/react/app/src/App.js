@@ -5,7 +5,6 @@ function useInput(initialState) {
     const [state,setState] = useState(initialState);
 
     const setInput = (event) => {
-        // console.dir(event);
         if (event) {
             if (event.currentTarget !== undefined) {
                 setState(event.currentTarget.value);
@@ -14,7 +13,6 @@ function useInput(initialState) {
             }
         }
     };
-    // console.dir(state);
     return [state,setInput];
 }
 
@@ -22,19 +20,17 @@ const App = () => {
     const [entry_id, setid] = useInput('');    
     const [apiData, setApiData] = useState([]);
     const getAPI = useCallback((event) => {
-        event.preventDefault();
-
-        const API = `/get/?entry_id=${entry_id}`;            
-        
-        // console.log(API);
-            fetch(API)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {                    
-                    setApiData(data);
-                });
-    }, [entry_id]);
+    event.preventDefault();
+    const API = `/get/?entry_id=${entry_id}`;                    
+    fetch(API)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {                    
+            setApiData(data);
+        });
+    }, 
+    [entry_id]);
 
     return (
         <Fragment>
@@ -66,7 +62,6 @@ const App = () => {
                     </thead>
                             <tbody>
                             {apiData.map((field, index) => {
-                                // const country_code = field[1];
                                 const date_value = field[2];
                                 const confirmed = field[3];
                                 const deaths = field[4];

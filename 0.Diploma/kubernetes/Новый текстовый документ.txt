@@ -1,1 +1,0 @@
-kubectl create secret docker-registry regcred --docker-server=maxchecr.azurecr.io --docker-username=MaxCheCR --docker-password=7+SbyuGoboeuZwcloibyy6BL3w14XyvG

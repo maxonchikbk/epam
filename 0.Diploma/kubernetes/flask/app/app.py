@@ -58,7 +58,7 @@ def jsonfunc():
     uri = "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/2021-01-01/2021-12-31"
     uresponse = requests.get(uri)
     jresponse = uresponse.text
-    jsonf = json.loads(Jresponse)
+    jsonf = json.loads(jresponse)
     for dv in jsonf['data']:                
         for cc in jsonf['data'][dv]:                    
             data = jsonf['data'][dv][cc]                    
