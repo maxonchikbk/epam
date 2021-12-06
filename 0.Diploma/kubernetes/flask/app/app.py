@@ -15,6 +15,7 @@ class Config(object):
 
 
 app = Flask(__name__)
+app.config['WTF_CSRF_ENABLED'] = False # Sensitive
 # CORS(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
