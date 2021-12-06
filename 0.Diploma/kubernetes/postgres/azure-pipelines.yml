@@ -1,0 +1,22 @@
+variables:
+- name: image-tag
+  value: $(Build.BuildId)
+- name: stage-name
+  value: $(Build.SourceBranchName)
+- name: repo-name
+  value: $(Build.Repository.Name)
+
+trigger:
+- dev
+- main
+
+pool:
+  name: Pool
+
+steps:
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'Diplomak8s'
+    namespace: '$(Build.SourceBranchName)'
+    manifests: '*.yaml'

@@ -5,7 +5,7 @@ function useInput(initialState) {
     const [state,setState] = useState(initialState);
 
     const setInput = (event) => {
-        console.dir(event);
+        // console.dir(event);
         if (event) {
             if (event.currentTarget !== undefined) {
                 setState(event.currentTarget.value);
@@ -14,37 +14,34 @@ function useInput(initialState) {
             }
         }
     };
-    console.dir(state);
+    // console.dir(state);
     return [state,setInput];
 }
 
 const App = () => {
     const [entry_id, setid] = useInput('');    
-        const getAPI = useCallback(() => {
-            const API = `/get/?entry_id=${entry_id}`;            
-                                   
+    const [apiData, setApiData] = useState([]);
+    const getAPI = useCallback((event) => {
+        event.preventDefault();
+
+        const API = `/get/?entry_id=${entry_id}`;            
+        
+        // console.log(API);
             fetch(API)
                 .then((response) => {
-                    console.log(response);
                     return response.json();
                 })
-                .then((data) => {
-                    console.log(data);
+                .then((data) => {                    
                     setApiData(data);
                 });
-        },        
-    [entry_id]);
+    }, [entry_id]);
 
-    const [apiData, setApiData] = useState([]);
     return (
         <Fragment>
             <header>
                 <h1>Covid statistics</h1>
             </header>
             <div className="form-container">
-                <form method="GET" action="/getall">
-                        <button type="submit">Get all data</button>
-                        </form>
                 <h2>Choose country</h2>
                 <form>
                     <div>
@@ -54,38 +51,43 @@ const App = () => {
                         <button onClick={getAPI}>Apply</button>
                     </div>
                 </form>
-            </div>
-            <table>
+            </div>            
                 {(
-                      <tbody>
-                                <th>Country</th>
-                                <th>date</th>
-                                <th>confirmed</th>
-                                <th>deaths</th>
-                                <th>stringency_actual</th>
-                                <th>stringency</th>
-                            {apiData.map((field) => {
-                                const country_code = field[0];
+                  <table>                    
+                    <thead>
+                        <tr>
+                            {/* <th>Country</th> */}
+                            <th>Date</th>
+                            <th>Confirmed</th>
+                            <th>Deaths</th>
+                            <th>Stringency actual</th>
+                            <th>Stringency</th>
+                        </tr>
+                    </thead>
+                            <tbody>
+                            {apiData.map((field, index) => {
+                                // const country_code = field[1];
                                 const date_value = field[2];
-                                const confirmed = field[1];
-                                const deaths = field[3];
-                                const stringency_actual = field[4];
-                                const stringency = field[5];         
+                                const confirmed = field[3];
+                                const deaths = field[4];
+                                const stringency_actual = field[5];
+                                const stringency = field[6];         
 
                             return (
-                                <tr>
-                                    <td>{country_code}</td>
+                                <tr key={index}>
+                                    {/* <td>{country_code}</td> */}
                                     <td>{date_value}</td>
                                     <td>{confirmed}</td>
                                     <td>{deaths}</td>
                                     <td>{stringency_actual}</td>
                                     <td>{stringency}</td>
+                                    
                                 </tr>
                             );
                         })}
                         </tbody>
-                )}
-                </table>
+                    </table>
+                )}                
         </Fragment>
     );
 };

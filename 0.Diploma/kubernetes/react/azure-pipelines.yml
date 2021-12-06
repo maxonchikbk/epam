@@ -1,0 +1,50 @@
+variables:
+- name: image-tag
+  value: $(Build.BuildId)
+- name: stage-name
+  value: $(Build.SourceBranchName)
+- name: repo-name
+  value: $(Build.Repository.Name)
+
+trigger:
+- dev
+- main
+
+pool:
+  name: Pool
+
+steps:
+- task: Docker@2
+  displayName: Login to ACR
+  inputs:
+    command: login
+    containerRegistry: 'DiplomaCR'
+
+- task: Docker@2
+  displayName: Build
+  inputs:
+    containerRegistry: 'DiplomaCR'
+    repository: '$(Build.Repository.Name)'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'    
+    tags: $(image-tag)
+
+- task: Docker@2
+  displayName: Logout of ACR
+  inputs:
+    command: logout
+    containerRegistry: 'DiplomaCR'
+
+- task: replacetokens@3
+  displayName: Replace tokens
+  inputs:    
+    targetFiles: '**/*.yaml'
+    tokenPrefix: __
+    tokenSuffix: __    
+
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'Diplomak8s'
+    namespace: '$(Build.SourceBranchName)'
+    manifests: '*.yaml'

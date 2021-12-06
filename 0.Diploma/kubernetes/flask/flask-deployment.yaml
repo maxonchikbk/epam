@@ -7,25 +7,23 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flask-app
+      app: flask
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: flask-app
+        app: flask
     spec:      
-      containers:
-      - image: maxonchik/flask_app
+      imagePullSecrets:
+      - name: regcred
+      containers:      
+      - image: maxchecr.azurecr.io/__repo-name__:__image-tag__
         name: flask
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
           protocol: TCP
-        command:
-          - "flask db init"
-          - "flask db migrate"
-          - "flask db upgrade"
         env:
         - name: POSTGRES_URL
           valueFrom:
@@ -38,5 +36,22 @@ spec:
             memory: 500Mi
           limits:
             cpu: 500m
-            memory: 500Mi
-
+            memory: 500Mi          
+      initContainers:
+        - name: init-db
+          image: maxchecr.azurecr.io/__repo-name__:__image-tag__
+          command: ['sh']
+          args: ['-c', "rm -Rf /app/migrations/lost+found; flask db init; flask db migrate; flask db upgrade"]
+          env:
+          - name: POSTGRES_URL
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_URL
+          volumeMounts:
+          - name: flask-pvc
+            mountPath: /app/migrations
+      volumes:
+      - name: flask-pvc
+        persistentVolumeClaim:
+          claimName: flask-pvc               

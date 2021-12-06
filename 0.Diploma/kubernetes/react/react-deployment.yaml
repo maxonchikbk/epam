@@ -2,21 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: react-app
+  name: react
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: react-app
+      app: react
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: react-app
+        app: react
     spec:      
+      imagePullSecrets:
+      - name: regcred
       containers:
-      - image: maxonchik/react_app
+      - image: maxchecr.azurecr.io/__repo-name__:__image-tag__
         name: react
         imagePullPolicy: Always
         ports:
