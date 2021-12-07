@@ -56,9 +56,9 @@ class Covid(db.Model):
 def jsonfunc():
     cur.execute('DELETE FROM covid')
     uri = "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/2021-01-01/2021-12-31"
-    uResponse = requests.get(uri)
-    Jresponse = uResponse.text
-    jsonf = json.loads(Jresponse)
+    uresponse = requests.get(uri)
+    jresponse = uresponse.text
+    jsonf = json.loads(jresponse)
     for dv in jsonf['data']:                
         for cc in jsonf['data'][dv]:                    
             data = jsonf['data'][dv][cc]                    
@@ -76,8 +76,8 @@ def getall():
 
 @app.route('/get/')
 def getdate():
-    id = request.args.get('entry_id')
-    print(id)
+    cc_id = request.args.get('entry_id')
+    print(cc_id)
     cur.execute("SELECT * from covid where country_code = '%s' order by date_value" % id)
     rows = cur.fetchall()
     response = jsonify(rows)    
