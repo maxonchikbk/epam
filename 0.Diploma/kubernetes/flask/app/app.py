@@ -78,7 +78,7 @@ def getall():
 def getdate():
     cc_id = request.args.get('entry_id')
     print(cc_id)
-    cur.execute("SELECT * from covid where country_code = '%s' order by date_value" % id)
+    cur.execute("SELECT * from covid where country_code = '%s' order by date_value" % cc_id)
     rows = cur.fetchall()
     response = jsonify(rows)    
     return response  
