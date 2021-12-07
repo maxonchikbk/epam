@@ -14,12 +14,12 @@ provider "helm" {
 }
 
 provider "kubectl" {
-    load_config_file = true
-    config_path = "~/.kube/config"
+  load_config_file = true
+  config_path      = "~/.kube/config"
 }
 
 resource "helm_release" "ingress-nginx" {
-  name       = "ingress-nginx"
+  name = "ingress-nginx"
 
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
@@ -31,7 +31,7 @@ resource "helm_release" "ingress-nginx" {
 }
 
 resource "helm_release" "kube-prometheus-stack" {
-  name       = "kube-prometheus-stack"
+  name = "kube-prometheus-stack"
 
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -41,38 +41,33 @@ resource "helm_release" "kube-prometheus-stack" {
   ]
 }
 
+data "kubectl_filename_list" "namespace" {
+  pattern = "../../kubernetes/ns-*.yaml"
+}
+
+resource "kubectl_manifest" "namespace" {
+  count     = length(data.kubectl_filename_list.namespace.matches)
+  yaml_body = file(element(data.kubectl_filename_list.namespace.matches, count.index))
+}
+
+data "kubectl_filename_list" "service" {
+  pattern = "../../kubernetes/service-*.yaml"
+}
+
+resource "kubectl_manifest" "service" {    
+  count     = length(data.kubectl_filename_list.service.matches)
+  yaml_body = file(element(data.kubectl_filename_list.service.matches, count.index))
+
+  depends_on = [kubectl_manifest.namespace]
+}
+
 data "kubectl_filename_list" "ingress" {
-    pattern = "../../kubernetes/*.yaml"
+  pattern = "../../kubernetes/ingress-*.yaml"
 }
 
 resource "kubectl_manifest" "ingress" {
-    count = length(data.kubectl_filename_list.ingress.matches)
-    yaml_body = file(element(data.kubectl_filename_list.ingress.matches, count.index))
-}
+  count     = length(data.kubectl_filename_list.ingress.matches)
+  yaml_body = file(element(data.kubectl_filename_list.ingress.matches, count.index))
 
-data "kubectl_filename_list" "postgres" {
-    pattern = "../../kubernetes/postgres/*.yaml"
-}
-
-resource "kubectl_manifest" "postgres" {
-    count = length(data.kubectl_filename_list.postgres.matches)
-    yaml_body = file(element(data.kubectl_filename_list.postgres.matches, count.index))
-}
-
-data "kubectl_filename_list" "flask" {
-    pattern = "../../kubernetes/flask/*.yaml"
-}
-
-resource "kubectl_manifest" "flask" {
-    count = length(data.kubectl_filename_list.flask.matches)
-    yaml_body = file(element(data.kubectl_filename_list.flask.matches, count.index))
-}
-
-data "kubectl_filename_list" "react" {
-    pattern = "../../kubernetes/react/*.yaml"
-}
-
-resource "kubectl_manifest" "react" {
-    count = length(data.kubectl_filename_list.react.matches)
-    yaml_body = file(element(data.kubectl_filename_list.react.matches, count.index))
+  depends_on = [kubectl_manifest.namespace]
 }

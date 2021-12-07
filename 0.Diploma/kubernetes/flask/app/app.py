@@ -6,8 +6,8 @@ import requests
 from waitress import serve
 from prometheus_flask_exporter import PrometheusMetrics
 import psycopg2
+from flask_cors import CORS
 import os 
-from flask_wtf.csrf import CSRFProtect
 
 class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get("POSTGRES_URL")
@@ -15,8 +15,7 @@ class Config(object):
 
 
 app = Flask(__name__)
-csrf = CSRFProtect()
-csrf.init_app(app)
+CORS(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -40,7 +39,7 @@ class Covid(db.Model):
     confirmed = db.Column(db.Integer())
     deaths = db.Column(db.Integer())
     stringency_actual = db.Column(db.String())
-    stringency = db.Column(db.String())    
+    stringency = db.Column(db.String())
 
     def __init__(self, country_code, date_value, confirmed, deaths, stringency_actual, stringency):
         self.country_code= country_code
@@ -48,7 +47,7 @@ class Covid(db.Model):
         self.confirmed = confirmed
         self.deaths = deaths
         self.stringency_actual = stringency_actual
-        self.stringency = stringency        
+        self.stringency = stringency
 
     def __repr__(self):
         return f"<Country {self.country_code}>"
@@ -57,9 +56,9 @@ class Covid(db.Model):
 def jsonfunc():
     cur.execute('DELETE FROM covid')
     uri = "https://covidtrackerapi.bsg.ox.ac.uk/api/v2/stringency/date-range/2021-01-01/2021-12-31"
-    uresponse = requests.get(uri)
-    jresponse = uresponse.text
-    jsonf = json.loads(jresponse)
+    uResponse = requests.get(uri)
+    Jresponse = uResponse.text
+    jsonf = json.loads(Jresponse)
     for dv in jsonf['data']:                
         for cc in jsonf['data'][dv]:                    
             data = jsonf['data'][dv][cc]                    
@@ -77,8 +76,8 @@ def getall():
 
 @app.route('/get/')
 def getdate():
-    entry_id = request.args.get('entry_id')
-    print(entry_id)
+    id = request.args.get('entry_id')
+    print(id)
     cur.execute("SELECT * from covid where country_code = '%s' order by date_value" % id)
     rows = cur.fetchall()
     response = jsonify(rows)    

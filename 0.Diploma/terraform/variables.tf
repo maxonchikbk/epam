@@ -3,7 +3,7 @@ variable "prefix" {
 }
 
 variable "location" {
-  default = "southcentralus"
+  default = "canadacentral"
 }
 
 variable "node_count" {

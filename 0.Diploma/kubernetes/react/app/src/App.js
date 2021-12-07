@@ -20,17 +20,18 @@ const App = () => {
     const [entry_id, setid] = useInput('');    
     const [apiData, setApiData] = useState([]);
     const getAPI = useCallback((event) => {
-    event.preventDefault();
-    const API = `/get/?entry_id=${entry_id}`;                    
-    fetch(API)
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {                    
-            setApiData(data);
-        });
-    }, 
-    [entry_id]);
+        event.preventDefault();
+
+        const API = `/get/?entry_id=${entry_id}`;            
+        
+            fetch(API)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {                    
+                    setApiData(data);
+                });
+    }, [entry_id]);
 
     return (
         <Fragment>
@@ -38,6 +39,9 @@ const App = () => {
                 <h1>Covid statistics</h1>
             </header>
             <div className="form-container">
+                <form method="GET" action="/json">
+                    <button type="submit">Fill database</button>
+                </form>
                 <h2>Choose country</h2>
                 <form>
                     <div>
@@ -52,7 +56,6 @@ const App = () => {
                   <table>                    
                     <thead>
                         <tr>
-                            {/* <th>Country</th> */}
                             <th>Date</th>
                             <th>Confirmed</th>
                             <th>Deaths</th>
@@ -70,7 +73,6 @@ const App = () => {
 
                             return (
                                 <tr key={index}>
-                                    {/* <td>{country_code}</td> */}
                                     <td>{date_value}</td>
                                     <td>{confirmed}</td>
                                     <td>{deaths}</td>
