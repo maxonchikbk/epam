@@ -7,6 +7,7 @@ from waitress import serve
 from prometheus_flask_exporter import PrometheusMetrics
 import psycopg2
 from flask_cors import CORS
+from flask_wtf import CSRFProtect
 import os 
 
 class Config(object):
@@ -15,7 +16,9 @@ class Config(object):
 
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app)
+csrf = CSRFProtect()
+csrf.init_app(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
