@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
 spec:
   rules:
-  - host: maxche.southcentralus.cloudapp.azure.com
+  - host: maxche.canadacentral.cloudapp.azure.com
     http:
       paths:
       - path: /

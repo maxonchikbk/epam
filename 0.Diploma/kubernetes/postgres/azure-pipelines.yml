@@ -14,9 +14,25 @@ pool:
   name: Pool
 
 steps:
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud-database'
+    organization: 'maximche'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'MaximChe_database'
+    cliProjectName: 'database'
+    cliSources: '.'
+
 - task: KubernetesManifest@0
   inputs:
     action: 'deploy'
     kubernetesServiceConnection: 'Diplomak8s'
     namespace: '$(Build.SourceBranchName)'
     manifests: '*.yaml'
+
+- task: SonarCloudAnalyze@1
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
