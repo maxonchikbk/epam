@@ -6,6 +6,10 @@ variable "location" {
   default = "canadacentral"
 }
 
+variable "vm_sku" {
+  default = "Standard_DS2_v2"
+}
+
 variable "node_count" {
   default = 1
 }

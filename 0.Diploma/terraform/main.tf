@@ -40,7 +40,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   default_node_pool {
     name       = "node"
     node_count = var.node_count
-    vm_size    = "Standard_D2as_v4"
+    vm_size    = "${var.vm_sku}"
   }
 
   network_profile {
@@ -65,6 +65,11 @@ resource "azurerm_container_registry" "acr" {
   }
 }
 
+data "azurerm_container_registry" "acr" {
+  name                = "${var.prefix}CR"
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
 resource "azurerm_virtual_network" "vn" {
   name                = "agentpool-network"
   resource_group_name = azurerm_resource_group.rg.name
@@ -87,7 +92,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   name                   = "${var.prefix}Pool"
   resource_group_name    = azurerm_resource_group.rg.name
   location               = azurerm_resource_group.rg.location
-  sku                    = "Standard_D2as_v4"
+  sku                    = "${var.vm_sku}"
   instances              = 1
   admin_username         = "max"
   single_placement_group = false
